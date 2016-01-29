@@ -28,19 +28,11 @@ Here you can learn how to write simple functions and work with if-else statement
 "use strict";
 
 function fizzBuzz(number) {
-  // console.log("test: " + number + " % 3", number % 3)
-  // console.log("test: " + number + " % 5", number % 5)
-  if (!(number % 3) && !(number % 5)) {
-    return "Fizz Buzz";
-  }
-  else if (!(number % 3)) {
-    return "Fizz";
-  }
-  else if (!(number % 5)) {
-    return "Buzz";
-  }
+  var mod3 = number % 3 === 0;
+  var mod5 = number % 5 === 0;
+  var result = mod3 && mod5 ? 'Fizz Buzz' : mod3 ? 'Fizz' : mod5 ? 'Buzz' : String(number);
 
-  return String(number);
+  return result;
 }
 
 var assert = require('assert');
