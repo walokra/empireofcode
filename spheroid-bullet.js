@@ -43,30 +43,65 @@ Even the true shape of the Earth is an Oblate Spheroid, though it is only very s
 
 "use strict";
 
-function golf(height, width){
+function golf_long(height, width){
+    // http://mathworld.wolfram.com/ProlateSpheroid.html
+    // https://en.wikipedia.org/wiki/Spheroid
     var result = [];
+    var c = height / 2;
+    var a = width / 2;
+
     // volume
-    var V = 0.524 * Math.pow(width, 2) * height;
+    var V = ((4 * Math.PI)/3) * Math.pow(a, 2) * c
+    // var V = 0.5239 * Math.pow(width, 2) * height;
     result.push(V.toFixed(2));
 
     // Area
     // oblate
-    if (height < width) {
-      var e = 1 - (Math.pow(height/2, 2) / Math.pow(width/2, 2));
-      console.log("e=" + e);
-      var S = (2 * Math.PI * Math.pow(width/2)) * (1 + ((1-Math.pow(e, 2)) / e * Math.atanh(e)));
+    if (c < a) {
+      var e2 = 1 - (Math.pow(c, 2) / Math.pow(a, 2));
+      var e = Math.sqrt(e2);
+      console.log("oblate, e2=" + e2 + "; e=" + e);
+      var S = (2 * Math.PI * Math.pow(a, 2)) * (1 + ((1-Math.pow(e, 2)) / e * Math.atanh(e)));
       result.push(S.toFixed(2));
     }
-    else if (height > width) {
-      var e = 1 - (Math.pow(width/2, 2) / Math.pow(height/2, 2));
-      console.log("e=" + e);
-      var S = (2 * Math.PI * Math.pow(width/2, 2)) * (1 + ((height/2 / (width/2 * e)) * Math.asin(e)));
+    // prolate
+    else if (c > a) {
+      var e2 = 1 - (Math.pow(a, 2) / Math.pow(c, 2));
+      var e = Math.sqrt(e2);
+      // console.log("prolate, e=" + e2 + "; e=" + e);
+      var S = (2 * Math.PI * Math.pow(a, 2)) * (1 + ((c / (a * e)) * Math.asin(e)));
+      result.push(S.toFixed(2));
+    }
+    // sphere
+    else if (c === a) {
+      // console.log("sphere=" + a);
+      var S = 4 * Math.PI * Math.pow(a, 2);
       result.push(S.toFixed(2));
     }
 
     console.log("result=" + result);
     return result;
 }
+
+function golf_clear(h, w){
+    var c = h / 2, a = w / 2, m = Math, i = m.PI, q = m.sqrt, p = m.pow, r=m.round, e, V, S, j = p(c, 2), k = p(a, 2), l = 2 * i * k ;
+    V = ((4 * i)/3) * p(a, 2) * c
+
+    if (c < a) {
+      e = q(1 - j / k);
+      S = l * (1 + (1-p(e, 2)) / e * m.atanh(e));
+    }
+    else if (c > a) {
+      e = q(1 - k / j);
+      S = l * (1 + c / (a * e) * m.asin(e));
+    }
+    else {
+      S = 4 * i * k;
+    }
+    return [r(V*100)/100, r(S*100)/100];
+}
+
+function golf(a,n){var r,t,o,u=a/2,c=n/2,e=Math,f=e.PI,h=e.sqrt,i=e.pow,l=e.round,s=i(u,2),d=i(c,2),g=2*f*d;return t=4*f/3*i(c,2)*u,c>u?(r=h(1-s/d),o=g*(1+(1-i(r,2))/r*e.atanh(r))):u>c?(r=h(1-d/s),o=g*(1+u/(c*r)*e.asin(r))):o=4*f*d,[l(100*t)/100,l(100*o)/100]}
 
 var assert = require('assert');
 
