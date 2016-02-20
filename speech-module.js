@@ -34,26 +34,64 @@ This concept may be useful for the speech synthesis software or automated report
 
 "use strict";
 
-var FIRST_TEN = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-var SECOND_TEN = ["ten", "eleven", "twelve", "thirteen", "fourteen",
-              "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
-var OTHER_TENS = ["twenty", "thirty", "forty", "fifty",
-              "sixty", "seventy", "eighty", "ninety"];
-var HUNDRED = "hundred";
-var THOUSAND = "thousand";
-
-
 function tellNumber(number){
-	var words = "";
-	var firsts = "";
-	var tens = "";
-	var hundreds = "";
-	var thousands = "";
-	var tensthousands = "";
-	var hundredsthousands = "";
-	var millions = "";
+	console.log("number="+number);
+		
+	var digits = ['zero','one','two','three','four', 'five','six','seven','eight','nine'];
+	var tens = ['ten','eleven','twelve','thirteen', 'fourteen','fifteen','sixteen', 'seventeen','eighteen','nineteen'];
+	var tenstens = ['twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+	var thousands = ['','thousand','million', 'billion','trillion'];
+
+	var n = number.toString().split(''); 
+	var str = ''; 
+	var sk = 0;
+	var x = n.length;
+	// console.log("n="+n + "; x=" + x);
 	
-    return words;
+	if (n[0] === '-') {
+		str += 'minus ';
+		n.splice(0,1);
+		x--; 
+	}
+	
+	if (n[0] === '0') {
+		return digits[0];
+	}
+	
+	for (var i=0; i < x; i++) {
+		console.log("n[i]=" + n[i]);
+		console.log("x-i=" + (x-i) +"; %3=" + (x-i) % 3);
+		// Check for tens
+		if ((x-i) % 3 == 2) {
+			// Check for first tens
+			if (n[i] == '1') {
+				str += tens[new Number(n[i+1])] + ' '; 
+				i++;
+				sk=1;
+			} 
+			// other tens
+			else if (n[i] != 0) {
+				str += tenstens[n[i]-2] + ' ';
+				sk=1;
+			}
+		} else if (n[i] !=0 ) {
+			str += digits[n[i]] +' '; 
+			if ((x-i) % 3 == 0) {
+				str += 'hundred ';
+			}
+			sk=1;
+		} 
+		if ((x-i) % 3 == 1) {
+			if (sk) {
+				str += thousands[(x-i-1)/3] + ' ';
+			}
+			sk=0;
+		}
+	} 
+	
+	// console.log("str='" + str.trim() + "'");
+	
+	return str.trim();
 }
 
 var assert = require("assert");
